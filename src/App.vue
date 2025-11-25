@@ -1,30 +1,64 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, computed } from 'vue';
+
+const people = ref([{ name: 'Jan', age: 12 }, { name: 'Piet', age: 20 }, { name: 'Herman', age: 65 }, { name: 'Ivan', age: 5 }, { name: 'Tom', age: 43 }]);
+const newName = ref(null);
+const newAge = ref(null);
+
+const children = computed(() => {
+    return people.value.filter((person) => person.age < 18)
+});
+
+const adults = computed(() => {
+    return people.value.filter((person) => person.age >= 18)
+});
+
+const totalPeople = computed(() => {
+    return people.value.length;
+});
+
+const numberOfChildren = computed(() => {
+    return children.value.length;
+});
+
+
+const addPerson = () => {
+    if (newName.value && newAge.value) {
+        people.value.push({name: newName.value, age: newAge.value});
+        newName.value = null;
+        newAge.value = null;
+    }
+};
 </script>
 
+
+
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+<input v-model="newName" placeholder="Naam" type="text">
+<input v-model.number="newAge" placeholder="Leeftijd" type="number">
+
+<button @click="addPerson">Toevoegen</button>
+
+<ul>
+    <li v-for="(person, index) in people" :key="index">{{ person.name }}, {{ person.age }} jaar oud</li>
+</ul>
+
+<p>Kinderen:</p>
+<ul>
+    <li v-for="(person, index) in children" :key="index">{{ person.name }}, {{ person.age }} jaar oud</li>
+</ul>
+
+<p>Volwassenen:</p>
+<ul>
+    <li v-for="(person, index) in adults" :key="index">{{ person.name }}, {{ person.age }} jaar oud</li>
+</ul>
+
+<p>Aantal personen: {{ totalPeople }}</p>
+<p>Aantal kinderen: {{ numberOfChildren }}</p>
+
 </template>
 
+
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 </style>
